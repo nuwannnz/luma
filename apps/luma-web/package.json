@@ -1,0 +1,150 @@
+{
+	"name": "luma-web",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"format": "prettier --write .",
+		"lint": "prettier --check . && eslint .",
+		"test:unit": "vitest",
+		"test": "npm run test:unit -- --run && npm run test:e2e",
+		"test:e2e": "playwright test"
+	},
+	"devDependencies": {},
+	"nx": {
+		"name": "luma-web",
+		"projectType": "application",
+		"sourceRoot": "apps/luma-web/src",
+		"tags": [],
+		"targets": {
+			"dev": {
+				"executor": "nx:run-commands",
+				"cache": false,
+				"options": {
+					"command": "npm run dev",
+					"cwd": "apps/luma-web"
+				}
+			},
+			"build": {
+				"executor": "nx:run-commands",
+				"outputs": [
+					"{projectRoot}/build",
+					"{projectRoot}/.svelte-kit"
+				],
+				"options": {
+					"command": "npm run build",
+					"cwd": "apps/luma-web"
+				}
+			},
+			"preview": {
+				"executor": "nx:run-commands",
+				"dependsOn": [
+					"build"
+				],
+				"cache": false,
+				"options": {
+					"command": "npm run preview",
+					"cwd": "apps/luma-web"
+				}
+			},
+			"prepare": {
+				"executor": "nx:run-commands",
+				"cache": false,
+				"options": {
+					"command": "npm run prepare",
+					"cwd": "apps/luma-web"
+				}
+			},
+			"check": {
+				"executor": "nx:run-commands",
+				"inputs": [
+					"default"
+				],
+				"options": {
+					"command": "npm run check",
+					"cwd": "apps/luma-web"
+				}
+			},
+			"check-watch": {
+				"executor": "nx:run-commands",
+				"cache": false,
+				"options": {
+					"command": "npm run check:watch",
+					"cwd": "apps/luma-web"
+				}
+			},
+			"typecheck": {
+				"executor": "nx:run-commands",
+				"inputs": [
+					"default"
+				],
+				"options": {
+					"command": "npm run check",
+					"cwd": "apps/luma-web"
+				}
+			},
+			"lint": {
+				"executor": "nx:run-commands",
+				"inputs": [
+					"default",
+					"{workspaceRoot}/eslint.config.js"
+				],
+				"options": {
+					"command": "npm run lint",
+					"cwd": "apps/luma-web"
+				}
+			},
+			"format": {
+				"executor": "nx:run-commands",
+				"cache": false,
+				"inputs": [
+					"default",
+					"{workspaceRoot}/.prettierrc",
+					"{workspaceRoot}/.prettierignore"
+				],
+				"options": {
+					"command": "npm run format",
+					"cwd": "apps/luma-web"
+				}
+			},
+			"test": {
+				"executor": "nx:run-commands",
+				"inputs": [
+					"default",
+					"{projectRoot}/vite.config.ts"
+				],
+				"options": {
+					"command": "npm run test",
+					"cwd": "apps/luma-web"
+				}
+			},
+			"test-unit": {
+				"executor": "nx:run-commands",
+				"inputs": [
+					"default"
+				],
+				"options": {
+					"command": "npm run test:unit -- --run",
+					"cwd": "apps/luma-web"
+				}
+			},
+			"test-e2e": {
+				"executor": "nx:run-commands",
+				"inputs": [
+					"default",
+					"{projectRoot}/playwright.config.ts"
+				],
+				"options": {
+					"command": "npm run test:e2e",
+					"cwd": "apps/luma-web"
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,53 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"declaration": true,
+		"declarationMap": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"paths": {
+			"$lib": [
+				"./src/lib"
+			],
+			"$lib/*": [
+				"./src/lib/*"
+			],
+			"$app/types": [
+				"./.svelte-kit/types/index.d.ts"
+			]
+		},
+		"resolveJsonModule": true,
+		"rewriteRelativeImportExtensions": true,
+		"rootDirs": [
+			"./src",
+			"./.svelte-kit/types"
+		],
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strict": true,
+		"types": [
+			"svelte"
+		],
+		"verbatimModuleSyntax": true,
+		"isolatedModules": true,
+		"lib": [
+			"esnext",
+			"DOM",
+			"DOM.Iterable"
+		],
+	},
+	"include": [
+		"src/**/*.d.ts",
+		"src/**/*",
+		"tests/**/*",
+		"vite.config.ts",
+		"./.svelte-kit/ambient.d.ts",
+		"./.svelte-kit/non-ambient.d.ts",
+		"./.svelte-kit/types/**/*.d.ts"
+	],
+	"references": []
+}
