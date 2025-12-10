@@ -1,0 +1,49 @@
+{
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"name": "infra-cdk",
+	"root": "infra/cdk",
+	"sourceRoot": "infra/cdk",
+	"projectType": "library",
+	"targets": {
+		"deploy": {
+			"executor": "nx:run-commands",
+			"outputs": [],
+			"options": {
+				"cwd": "infra/cdk",
+				"command": "npx aws-cdk deploy",
+				"forwardAllArgs": true
+			}
+		},
+		"diff": {
+			"executor": "nx:run-commands",
+			"outputs": [],
+			"options": {
+				"cwd": "infra/cdk",
+				"command": "npx aws-cdk diff",
+				"forwardAllArgs": true
+			}
+		},
+		"synth": {
+			"executor": "nx:run-commands",
+			"outputs": [],
+			"options": {
+				"cwd": "infra/cdk",
+				"command": "npx aws-cdk synth",
+				"forwardAllArgs": true
+			}
+		},
+		"bootstrap": {
+			"executor": "nx:run-commands",
+			"outputs": [],
+			"options": {
+				"cwd": "infra/cdk",
+				"command": "npx aws-cdk bootstrap",
+				"forwardAllArgs": true
+			}
+		}
+	},
+	"tags": [
+		"type:infra",
+		"scope:cdk"
+	]
+}
