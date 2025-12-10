@@ -4,6 +4,9 @@ import (
 	"os"
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awsapigateway"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
+
 	// "github.com/aws/aws-cdk-go/awscdk/v2/awssqs"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -20,12 +23,39 @@ func lumaApiStack(scope constructs.Construct, id string, props *CdkStackProps) a
 	}
 	stack := awscdk.NewStack(scope, &id, &sprops)
 
-	// The code that defines your stack goes here
+	// Define the Lambda function using a Docker image
+	lumaApiLambda := awslambda.NewDockerImageFunction(stack, jsii.String("LumaApiLambda"), &awslambda.DockerImageFunctionProps{
+		Code: awslambda.DockerImageCode_FromImageAsset(jsii.String("../../apps/luma-api/"), &awslambda.AssetImageCodeProps{}),
+		// Add other properties like memory, timeout, etc.
+		MemorySize: jsii.Number(128),
+		Timeout:    awscdk.Duration_Seconds(jsii.Number(30)),
+	})
 
-	// example resource
-	// queue := awssqs.NewQueue(stack, jsii.String("CdkQueue"), &awssqs.QueueProps{
-	// 	VisibilityTimeout: awscdk.Duration_Seconds(jsii.Number(300)),
-	// })
+	// Create API Gateway REST API with CORS enabled
+	api := awsapigateway.NewRestApi(stack, jsii.String("LumaApi"), &awsapigateway.RestApiProps{
+		RestApiName: jsii.String("LumaApi"),
+		Description: jsii.String("Luma API Gateway"),
+		DeployOptions: &awsapigateway.StageOptions{
+			StageName: jsii.String("dev"),
+		},
+		DefaultCorsPreflightOptions: &awsapigateway.CorsOptions{
+			AllowOrigins: awsapigateway.Cors_ALL_ORIGINS(),
+			AllowMethods: awsapigateway.Cors_ALL_METHODS(),
+			AllowHeaders: jsii.Strings("*"),
+		},
+	})
+
+	// Create /api/v1 resource path
+	apiResource := api.Root().AddResource(jsii.String("api"), nil)
+	v1Resource := apiResource.AddResource(jsii.String("v1"), nil)
+
+	// Add proxy resource with Lambda integration (Lambda proxy enabled by default)
+	v1Resource.AddProxy(&awsapigateway.ProxyResourceOptions{
+		DefaultIntegration: awsapigateway.NewLambdaIntegration(lumaApiLambda, &awsapigateway.LambdaIntegrationOptions{
+			Proxy: jsii.Bool(true),
+		}),
+		AnyMethod: jsii.Bool(true),
+	})
 
 	return stack
 }
