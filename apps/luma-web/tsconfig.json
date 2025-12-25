@@ -29,16 +29,10 @@
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strict": true,
-		"types": [
-			"svelte"
-		],
+		"types": ["svelte"],
 		"verbatimModuleSyntax": true,
 		"isolatedModules": true,
-		"lib": [
-			"esnext",
-			"DOM",
-			"DOM.Iterable"
-		],
+		"lib": ["esnext", "DOM", "DOM.Iterable"]
 	},
 	"include": [
 		"src/**/*.d.ts",

@@ -18,8 +18,7 @@
 	];
 </script>
 
-
-<DashboardShell navItems={navItems} title="Luma Dashboard" subtitle="Today" userName="Alex Carter">
+<DashboardShell {navItems} title="Luma Dashboard" subtitle="Today" userName="Alex Carter">
 	{#snippet headerActions()}
 		<button
 			type="button"

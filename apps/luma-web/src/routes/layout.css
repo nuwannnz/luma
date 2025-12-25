@@ -31,7 +31,7 @@ body {
 }
 
 .card-surface {
-	@apply bg-[var(--card)] text-[var(--text)] border border-[var(--border)] shadow-sm rounded-xl;
+	@apply rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--text)] shadow-sm;
 }
 
 .muted-panel {

@@ -29,7 +29,9 @@
 	} = $props();
 </script>
 
-<header class="sticky top-0 z-10 bg-[var(--surface)]/90 backdrop-blur border-b border-[var(--border)]">
+<header
+	class="sticky top-0 z-10 bg-[var(--surface)]/90 backdrop-blur border-b border-[var(--border)]"
+>
 	<div class="flex items-center justify-between px-4 py-3 md:px-6">
 		<div class="flex items-center gap-3">
 			<button
@@ -68,7 +70,9 @@
 				aria-label="Toggle dark mode"
 			>
 				<span aria-hidden="true">{themeId === 'pastel-dark' ? '🌙' : '🌞'}</span>
-				<span class="hidden md:inline text-sm font-medium">{themeId === 'pastel-dark' ? 'Dark' : 'Light'}</span>
+				<span class="hidden md:inline text-sm font-medium"
+					>{themeId === 'pastel-dark' ? 'Dark' : 'Light'}</span
+				>
 			</button>
 			<div class="hidden md:flex flex-col text-right">
 				<p class="text-sm font-semibold text-[var(--text)]">{userName ?? 'Guest'}</p>

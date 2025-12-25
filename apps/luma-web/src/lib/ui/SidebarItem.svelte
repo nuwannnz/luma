@@ -1,7 +1,12 @@
 <script lang="ts">
 	import type { SidebarItemType } from './types';
 
-	let { item, active = false, collapsed = false, select }: {
+	let {
+		item,
+		active = false,
+		collapsed = false,
+		select
+	}: {
 		item: SidebarItemType;
 		active?: boolean;
 		collapsed?: boolean;
@@ -26,7 +31,9 @@
 		{/if}
 		<span class={`${collapsed ? 'sr-only' : 'text-sm font-medium truncate'}`}>{item.label}</span>
 		{#if item.badge && !collapsed}
-			<span class="ml-auto inline-flex items-center rounded-full bg-[var(--accent)]/40 text-[var(--text)] px-2 py-0.5 text-xs font-semibold">
+			<span
+				class="ml-auto inline-flex items-center rounded-full bg-[var(--accent)]/40 text-[var(--text)] px-2 py-0.5 text-xs font-semibold"
+			>
 				{item.badge}
 			</span>
 		{/if}
