@@ -15,6 +15,11 @@ nx bootstrap infra-cdk -- aws://123456789012/us-east-1
 
 All commands execute from `infra/cdk` using the configuration in `cdk.json`. Ensure the `aws-cdk` CLI is installed (locally or via `devDependencies`) and AWS credentials are available before running the targets.
 
+### Frontend stack
+
+- `LumaFrontendStack` deploys the Svelte build from `apps/luma-web/.svelte-kit/output/client` to S3 and serves it via CloudFront (default CloudFront domain).
+- `nx deploy infra-cdk` now runs `luma-web:build` automatically before invoking CDK deploy, so the latest assets are published via `BucketDeployment`.
+
 ## Local Development
 
 - `go test ./...` runs unit tests for the CDK app.

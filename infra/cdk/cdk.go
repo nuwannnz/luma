@@ -18,5 +18,11 @@ func main() {
 		},
 	})
 
+	stacks.NewLumaFrontendStack(app, "LumaFrontendStack", &stacks.LumaFrontendStackProps{
+		StackProps: awscdk.StackProps{
+			Env: envConfig(),
+		},
+	})
+
 	app.Synth(nil)
 }

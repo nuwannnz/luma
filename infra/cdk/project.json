@@ -8,6 +8,9 @@
 		"deploy": {
 			"executor": "nx:run-commands",
 			"outputs": [],
+			"dependsOn": [
+				"luma-web:build"
+			],
 			"options": {
 				"cwd": "infra/cdk",
 				"command": "npx aws-cdk deploy",
