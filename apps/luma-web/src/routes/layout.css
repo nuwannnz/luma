@@ -1,3 +1,39 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+:root {
+	--surface: #f6f7fb;
+	--card: #ffffff;
+	--muted: #e7ecf5;
+	--accent: #9fd6c2;
+	--accent-strong: #5bb89c;
+	--text: #1f2937;
+	--text-muted: #4b5563;
+	--border: #d7deea;
+	color-scheme: light;
+}
+
+[data-theme='pastel-dark'] {
+	--surface: #0f172a;
+	--card: #111827;
+	--muted: #1f2937;
+	--accent: #a5b4fc;
+	--accent-strong: #818cf8;
+	--text: #e5e7eb;
+	--text-muted: #9ca3af;
+	--border: #1f2937;
+	color-scheme: dark;
+}
+
+body {
+	@apply bg-[var(--surface)] text-[var(--text)] antialiased;
+}
+
+.card-surface {
+	@apply bg-[var(--card)] text-[var(--text)] border border-[var(--border)] shadow-sm rounded-xl;
+}
+
+.muted-panel {
+	@apply bg-[var(--muted)] text-[var(--text)];
+}
