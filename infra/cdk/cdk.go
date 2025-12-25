@@ -1,102 +1,22 @@
 package main
 
 import (
-	"os"
+	"cdk/stacks"
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
-	"github.com/aws/aws-cdk-go/awscdk/v2/awsapigateway"
-	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
-
-	// "github.com/aws/aws-cdk-go/awscdk/v2/awssqs"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 )
-
-type CdkStackProps struct {
-	awscdk.StackProps
-}
-
-func lumaApiStack(scope constructs.Construct, id string, props *CdkStackProps) awscdk.Stack {
-	var sprops awscdk.StackProps
-	if props != nil {
-		sprops = props.StackProps
-	}
-	stack := awscdk.NewStack(scope, &id, &sprops)
-
-	// Define the Lambda function using a Docker image
-	lumaApiLambda := awslambda.NewDockerImageFunction(stack, jsii.String("LumaApiLambda"), &awslambda.DockerImageFunctionProps{
-		Code: awslambda.DockerImageCode_FromImageAsset(jsii.String("../../apps/luma-api/"), &awslambda.AssetImageCodeProps{}),
-		// Add other properties like memory, timeout, etc.
-		MemorySize: jsii.Number(128),
-		Timeout:    awscdk.Duration_Seconds(jsii.Number(30)),
-	})
-
-	// Create API Gateway REST API with CORS enabled
-	api := awsapigateway.NewRestApi(stack, jsii.String("LumaApi"), &awsapigateway.RestApiProps{
-		RestApiName: jsii.String("LumaApi"),
-		Description: jsii.String("Luma API Gateway"),
-		DeployOptions: &awsapigateway.StageOptions{
-			StageName: jsii.String("dev"),
-		},
-		DefaultCorsPreflightOptions: &awsapigateway.CorsOptions{
-			AllowOrigins: awsapigateway.Cors_ALL_ORIGINS(),
-			AllowMethods: awsapigateway.Cors_ALL_METHODS(),
-			AllowHeaders: jsii.Strings("*"),
-		},
-	})
-
-	// Create /api/v1 resource path
-	apiResource := api.Root().AddResource(jsii.String("api"), nil)
-	v1Resource := apiResource.AddResource(jsii.String("v1"), nil)
-
-	// Add proxy resource with Lambda integration (Lambda proxy enabled by default)
-	v1Resource.AddProxy(&awsapigateway.ProxyResourceOptions{
-		DefaultIntegration: awsapigateway.NewLambdaIntegration(lumaApiLambda, &awsapigateway.LambdaIntegrationOptions{
-			Proxy: jsii.Bool(true),
-		}),
-		AnyMethod: jsii.Bool(true),
-	})
-
-	return stack
-}
 
 func main() {
 	defer jsii.Close()
 
 	app := awscdk.NewApp(nil)
 
-	lumaApiStack(app, "LumaApiStack", &CdkStackProps{
-		awscdk.StackProps{
-			Env: env(),
+	stacks.NewLumaApiStack(app, "LumaApiStack", &stacks.LumaApiStackProps{
+		StackProps: awscdk.StackProps{
+			Env: envConfig(),
 		},
 	})
 
 	app.Synth(nil)
-}
-
-// env determines the AWS environment (account+region) in which our stack is to
-// be deployed. For more information see: https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-func env() *awscdk.Environment {
-	// If unspecified, this stack will be "environment-agnostic".
-	// Account/Region-dependent features and context lookups will not work, but a
-	// single synthesized template can be deployed anywhere.
-	//---------------------------------------------------------------------------
-	// return nil
-
-	// Uncomment if you know exactly what account and region you want to deploy
-	// the stack to. This is the recommendation for production stacks.
-	//---------------------------------------------------------------------------
-	// return &awscdk.Environment{
-	//  Account: jsii.String("123456789012"),
-	//  Region:  jsii.String("us-east-1"),
-	// }
-
-	// Uncomment to specialize this stack for the AWS Account and Region that are
-	// implied by the current CLI configuration. This is recommended for dev
-	// stacks.
-	//---------------------------------------------------------------------------
-	return &awscdk.Environment{
-		Account: jsii.String(os.Getenv("AWS_ACCOUNT_ID")),
-		Region:  jsii.String(os.Getenv("AWS_REGION")),
-	}
 }
