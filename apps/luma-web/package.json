@@ -14,7 +14,8 @@
 		"lint": "prettier --check . && eslint .",
 		"test:unit": "vitest",
 		"test": "npm run test:unit",
-		"test:e2e": "playwright test"
+		"test:e2e": "playwright test",
+		"coverage": "vitest run --coverage"
 	},
 	"devDependencies": {},
 	"nx": {
@@ -131,6 +132,16 @@
 				],
 				"options": {
 					"command": "npm run test:unit -- --run",
+					"cwd": "apps/luma-web"
+				}
+			},
+			"coverage": {
+				"executor": "nx:run-commands",
+				"inputs": [
+					"default"
+				],
+				"options": {
+					"command": "npm run coverage",
 					"cwd": "apps/luma-web"
 				}
 			},
