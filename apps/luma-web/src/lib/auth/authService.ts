@@ -5,6 +5,7 @@ import {
 	CognitoUserSession
 } from 'amazon-cognito-identity-js';
 import { cognitoConfig } from '$lib/config/cognito';
+import { browser } from '$app/environment';
 
 // Token storage keys
 const ACCESS_TOKEN_KEY = 'luma_access_token';
@@ -13,19 +14,26 @@ const REFRESH_TOKEN_KEY = 'luma_refresh_token';
 const USER_EMAIL_KEY = 'luma_user_email';
 
 class AuthService {
-	private userPool: CognitoUserPool;
+	private userPool: CognitoUserPool | null = null;
 
 	constructor() {
-		this.userPool = new CognitoUserPool({
-			UserPoolId: cognitoConfig.userPoolId,
-			ClientId: cognitoConfig.clientId
-		});
+		// Only initialize in browser context
+		if (browser && cognitoConfig.userPoolId && cognitoConfig.clientId) {
+			this.userPool = new CognitoUserPool({
+				UserPoolId: cognitoConfig.userPoolId,
+				ClientId: cognitoConfig.clientId
+			});
+		}
 	}
 
 	/**
 	 * Sign in with email and password
 	 */
 	async signIn(email: string, password: string): Promise<CognitoUserSession> {
+		if (!this.userPool) {
+			throw new Error('Auth service not initialized. Check your configuration.');
+		}
+
 		const authenticationData = {
 			Username: email,
 			Password: password
@@ -61,6 +69,8 @@ class AuthService {
 	 * Sign out the current user
 	 */
 	signOut(): void {
+		if (!this.userPool) return;
+
 		const cognitoUser = this.userPool.getCurrentUser();
 		if (cognitoUser) {
 			cognitoUser.signOut();
@@ -72,6 +82,8 @@ class AuthService {
 	 * Get the current user session
 	 */
 	async getCurrentSession(): Promise<CognitoUserSession | null> {
+		if (!this.userPool) return null;
+
 		const cognitoUser = this.userPool.getCurrentUser();
 
 		if (!cognitoUser) {
@@ -102,6 +114,8 @@ class AuthService {
 	 * Check if user is authenticated
 	 */
 	async isAuthenticated(): Promise<boolean> {
+		if (!browser) return false;
+
 		try {
 			const session = await this.getCurrentSession();
 			return session !== null && session.isValid();
@@ -114,7 +128,7 @@ class AuthService {
 	 * Get the access token
 	 */
 	getAccessToken(): string | null {
-		if (typeof window === 'undefined') return null;
+		if (!browser) return null;
 		return localStorage.getItem(ACCESS_TOKEN_KEY);
 	}
 
@@ -122,7 +136,7 @@ class AuthService {
 	 * Get the ID token
 	 */
 	getIdToken(): string | null {
-		if (typeof window === 'undefined') return null;
+		if (!browser) return null;
 		return localStorage.getItem(ID_TOKEN_KEY);
 	}
 
@@ -130,7 +144,7 @@ class AuthService {
 	 * Get stored user email
 	 */
 	getStoredUserEmail(): string | null {
-		if (typeof window === 'undefined') return null;
+		if (!browser) return null;
 		return localStorage.getItem(USER_EMAIL_KEY);
 	}
 
@@ -138,7 +152,7 @@ class AuthService {
 	 * Store tokens in localStorage
 	 */
 	private storeTokens(session: CognitoUserSession, email: string): void {
-		if (typeof window === 'undefined') return;
+		if (!browser) return;
 
 		localStorage.setItem(ACCESS_TOKEN_KEY, session.getAccessToken().getJwtToken());
 		localStorage.setItem(ID_TOKEN_KEY, session.getIdToken().getJwtToken());
@@ -150,7 +164,7 @@ class AuthService {
 	 * Clear all stored tokens
 	 */
 	private clearTokens(): void {
-		if (typeof window === 'undefined') return;
+		if (!browser) return;
 
 		localStorage.removeItem(ACCESS_TOKEN_KEY);
 		localStorage.removeItem(ID_TOKEN_KEY);

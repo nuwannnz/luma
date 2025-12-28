@@ -19,6 +19,10 @@ export default defineConfig({
 		},
 		sveltekit()
 	],
+	define: {
+		// Polyfill for amazon-cognito-identity-js
+		global: 'globalThis'
+	},
 	test: {
 		expect: { requireAssertions: true },
 		projects: [
