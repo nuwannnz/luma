@@ -28,6 +28,10 @@ class AuthService {
 
 	/**
 	 * Sign in with email and password
+	 * @param email - User's email address
+	 * @param password - User's password
+	 * @returns Promise that resolves with the Cognito user session
+	 * @throws Error if authentication fails or auth service is not initialized
 	 */
 	async signIn(email: string, password: string): Promise<CognitoUserSession> {
 		if (!this.userPool) {
@@ -80,6 +84,8 @@ class AuthService {
 
 	/**
 	 * Get the current user session
+	 * @returns Promise that resolves with the current session if valid, or null if not authenticated
+	 * @throws Error if session validation fails
 	 */
 	async getCurrentSession(): Promise<CognitoUserSession | null> {
 		if (!this.userPool) return null;
@@ -112,6 +118,7 @@ class AuthService {
 
 	/**
 	 * Check if user is authenticated
+	 * @returns Promise that resolves to true if user has a valid session, false otherwise
 	 */
 	async isAuthenticated(): Promise<boolean> {
 		if (!browser) return false;

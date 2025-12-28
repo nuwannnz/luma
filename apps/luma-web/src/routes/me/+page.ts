@@ -1,9 +1,10 @@
 import { redirect } from '@sveltejs/kit';
+import { browser } from '$app/environment';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ url }) => {
-	// Check if running in browser
-	if (typeof window === 'undefined') {
+	// Only check authentication in browser context
+	if (!browser) {
 		return {};
 	}
 
