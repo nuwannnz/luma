@@ -44,6 +44,11 @@
 		updateWeek();
 	}
 
+	const MONDAY_INDEX = 1;
+	const FRIDAY_END_INDEX = 6;
+	const SATURDAY_INDEX = 6;
+	const SUNDAY_INDEX = 0;
+
 	const navItems: SidebarItemType[] = [
 		{ id: 'week', label: 'My Week', icon: '📅', href: '/me/week' },
 		{ id: 'projects', label: 'Projects', icon: '📁', href: '/me/projects' },
@@ -93,14 +98,14 @@
 
 	<div class="grid grid-cols-1 md:grid-cols-6 gap-4">
 		<!-- Monday through Friday -->
-		{#each weekDates.slice(1, 6) as date (date.toISOString())}
+		{#each weekDates.slice(MONDAY_INDEX, FRIDAY_END_INDEX) as date (date.toISOString())}
 			<DayColumn {date} />
 		{/each}
 
 		<!-- Combined Saturday/Sunday column -->
 		<div class="flex flex-col gap-4">
-			<DayColumn date={weekDates[6]} isCombined={true} />
-			<DayColumn date={weekDates[0]} isCombined={true} />
+			<DayColumn date={weekDates[SATURDAY_INDEX]} isCombined={true} />
+			<DayColumn date={weekDates[SUNDAY_INDEX]} isCombined={true} />
 		</div>
 	</div>
 </DashboardShell>

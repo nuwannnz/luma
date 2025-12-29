@@ -27,9 +27,30 @@
 		// Links
 		html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
 
-		// Lists
-		html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
-		html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+		// Convert list items to proper HTML structure
+		const lines = html.split('\n');
+		let inList = false;
+		const processedLines: string[] = [];
+		
+		for (const line of lines) {
+			if (/^\* (.*)/.test(line)) {
+				if (!inList) {
+					processedLines.push('<ul>');
+					inList = true;
+				}
+				processedLines.push(line.replace(/^\* (.*)/, '<li>$1</li>'));
+			} else {
+				if (inList) {
+					processedLines.push('</ul>');
+					inList = false;
+				}
+				processedLines.push(line);
+			}
+		}
+		if (inList) {
+			processedLines.push('</ul>');
+		}
+		html = processedLines.join('\n');
 
 		// Line breaks
 		html = html.replace(/\n\n/g, '</p><p>');

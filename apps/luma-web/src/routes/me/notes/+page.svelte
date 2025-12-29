@@ -322,7 +322,7 @@
 						>
 							<h3 class="font-semibold text-[var(--text)]">{note.title}</h3>
 							<p class="text-sm text-[var(--text-muted)] line-clamp-3">
-								{note.body.substring(0, 150)}...
+								{note.body.length > 150 ? `${note.body.substring(0, 150)}...` : note.body}
 							</p>
 							{#if note.projectIds.length > 0}
 								<div class="flex flex-wrap gap-1 mt-2">

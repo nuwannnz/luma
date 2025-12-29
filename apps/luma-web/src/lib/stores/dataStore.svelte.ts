@@ -2,7 +2,7 @@ import type { Task, Project, Note } from '$lib/types';
 import { browser } from '$app/environment';
 
 function generateId(): string {
-	return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+	return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 }
 
 function loadFromStorage<T>(key: string, defaultValue: T): T {
