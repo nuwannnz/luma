@@ -86,30 +86,46 @@
 
 <style>
 	:global(.prose h1) {
-		@apply text-2xl font-bold mt-4 mb-2;
+		font-size: 1.5rem;
+		font-weight: bold;
+		margin-top: 1rem;
+		margin-bottom: 0.5rem;
 	}
 	:global(.prose h2) {
-		@apply text-xl font-bold mt-3 mb-2;
+		font-size: 1.25rem;
+		font-weight: bold;
+		margin-top: 0.75rem;
+		margin-bottom: 0.5rem;
 	}
 	:global(.prose h3) {
-		@apply text-lg font-bold mt-2 mb-1;
+		font-size: 1.125rem;
+		font-weight: bold;
+		margin-top: 0.5rem;
+		margin-bottom: 0.25rem;
 	}
 	:global(.prose p) {
-		@apply my-2;
+		margin-top: 0.5rem;
+		margin-bottom: 0.5rem;
 	}
 	:global(.prose ul) {
-		@apply list-disc list-inside my-2;
+		list-style-type: disc;
+		list-style-position: inside;
+		margin-top: 0.5rem;
+		margin-bottom: 0.5rem;
 	}
 	:global(.prose li) {
-		@apply ml-4;
+		margin-left: 1rem;
 	}
 	:global(.prose strong) {
-		@apply font-bold;
+		font-weight: bold;
 	}
 	:global(.prose em) {
-		@apply italic;
+		font-style: italic;
 	}
 	:global(.prose a) {
-		@apply text-[var(--accent-strong)] hover:underline;
+		color: var(--accent-strong);
+	}
+	:global(.prose a:hover) {
+		text-decoration: underline;
 	}
 </style>

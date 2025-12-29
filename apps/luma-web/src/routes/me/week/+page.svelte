@@ -15,8 +15,8 @@
 
 	let userEmail = $state('');
 	let currentWeekStart = $state(getWeekStart());
-	let weekDates = $state<Date[]>([]);
-	let weekRange = $state('');
+	let weekDates = $state<Date[]>(getWeekDates(getWeekStart()));
+	let weekRange = $state(formatWeekRange(getWeekStart(), getWeekEnd(getWeekStart())));
 
 	onMount(() => {
 		userEmail = authService.getStoredUserEmail() || 'User';
