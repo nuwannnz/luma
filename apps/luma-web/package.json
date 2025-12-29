@@ -17,7 +17,6 @@
 		"test:e2e": "playwright test",
 		"coverage": "vitest run --coverage"
 	},
-	"devDependencies": {},
 	"nx": {
 		"name": "luma-web",
 		"projectType": "application",
@@ -157,5 +156,8 @@
 				}
 			}
 		}
+	},
+	"dependencies": {
+		"amazon-cognito-identity-js": "^6.3.16"
 	}
 }

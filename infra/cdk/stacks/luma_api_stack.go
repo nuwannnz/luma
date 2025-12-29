@@ -3,6 +3,7 @@ package stacks
 import (
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsapigateway"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awscognito"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -12,12 +13,14 @@ type LumaApiStackProps struct {
 	awscdk.StackProps
 	DockerAssetPath *string
 	StageName       *string
+	UserPool        awscognito.IUserPool
 }
 
 func NewLumaApiStack(scope constructs.Construct, id string, props *LumaApiStackProps) awscdk.Stack {
 	sprops := awscdk.StackProps{}
 	dockerAssetPath := jsii.String("../../apps/luma-api/")
 	stageName := jsii.String("dev")
+	var userPool awscognito.IUserPool
 
 	if props != nil {
 		sprops = props.StackProps
@@ -26,6 +29,9 @@ func NewLumaApiStack(scope constructs.Construct, id string, props *LumaApiStackP
 		}
 		if props.StageName != nil {
 			stageName = props.StageName
+		}
+		if props.UserPool != nil {
+			userPool = props.UserPool
 		}
 	}
 
@@ -50,15 +56,35 @@ func NewLumaApiStack(scope constructs.Construct, id string, props *LumaApiStackP
 		},
 	})
 
+	// Create Cognito authorizer if UserPool is provided
+	var authorizer awsapigateway.IAuthorizer
+	if userPool != nil {
+		authorizer = awsapigateway.NewCognitoUserPoolsAuthorizer(stack, jsii.String("LumaApiAuthorizer"), &awsapigateway.CognitoUserPoolsAuthorizerProps{
+			CognitoUserPools: &[]awscognito.IUserPool{
+				userPool,
+			},
+			AuthorizerName: jsii.String("LumaCognitoAuthorizer"),
+		})
+	}
+
 	apiResource := api.Root().AddResource(jsii.String("api"), nil)
 	v1Resource := apiResource.AddResource(jsii.String("v1"), nil)
 
-	v1Resource.AddProxy(&awsapigateway.ProxyResourceOptions{
+	// Add proxy with optional authorizer
+	proxyOptions := &awsapigateway.ProxyResourceOptions{
 		DefaultIntegration: awsapigateway.NewLambdaIntegration(lumaApiLambda, &awsapigateway.LambdaIntegrationOptions{
 			Proxy: jsii.Bool(true),
 		}),
 		AnyMethod: jsii.Bool(true),
-	})
+	}
+
+	if authorizer != nil {
+		proxyOptions.DefaultMethodOptions = &awsapigateway.MethodOptions{
+			Authorizer: authorizer,
+		}
+	}
+
+	v1Resource.AddProxy(proxyOptions)
 
 	return stack
 }

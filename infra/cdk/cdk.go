@@ -12,10 +12,18 @@ func main() {
 
 	app := awscdk.NewApp(nil)
 
+	// Create auth stack first
+	authStack := stacks.NewLumaAuthStack(app, "LumaAuthStack", &stacks.LumaAuthStackProps{
+		StackProps: awscdk.StackProps{
+			Env: envConfig(),
+		},
+	})
+
 	stacks.NewLumaApiStack(app, "LumaApiStack", &stacks.LumaApiStackProps{
 		StackProps: awscdk.StackProps{
 			Env: envConfig(),
 		},
+		UserPool: authStack.UserPool,
 	})
 
 	stacks.NewLumaFrontendStack(app, "LumaFrontendStack", &stacks.LumaFrontendStackProps{
