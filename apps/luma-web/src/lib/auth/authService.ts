@@ -1,6 +1,7 @@
 import {
 	CognitoUserPool,
 	CognitoUser,
+	CognitoUserAttribute,
 	AuthenticationDetails,
 	CognitoUserSession
 } from 'amazon-cognito-identity-js';
@@ -80,6 +81,35 @@ class AuthService {
 			cognitoUser.signOut();
 		}
 		this.clearTokens();
+	}
+
+	/**
+	 * Sign up a new user
+	 * @param name - User's full name
+	 * @param email - User's email address
+	 * @param password - User's password
+	 * @returns Promise that resolves when user is created
+	 * @throws Error if registration fails or auth service is not initialized
+	 */
+	async signUp(name: string, email: string, password: string): Promise<void> {
+		if (!this.userPool) {
+			throw new Error('Auth service not initialized. Check your configuration.');
+		}
+
+		const attributeList = [
+			new CognitoUserAttribute({ Name: 'email', Value: email }),
+			new CognitoUserAttribute({ Name: 'name', Value: name })
+		];
+
+		return new Promise((resolve, reject) => {
+			this.userPool!.signUp(email, password, attributeList, [], (err, result) => {
+				if (err) {
+					reject(err);
+					return;
+				}
+				resolve();
+			});
+		});
 	}
 
 	/**

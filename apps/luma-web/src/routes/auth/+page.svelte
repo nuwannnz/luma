@@ -2,6 +2,8 @@
 	import { authService } from '$lib/auth/authService';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import Input from '$lib/ui/Input.svelte';
+	import Button from '$lib/ui/Button.svelte';
 
 	let email = $state('');
 	let password = $state('');
@@ -47,35 +49,25 @@
 
 			<form onsubmit={handleSubmit}>
 				<div class="space-y-4">
-					<div>
-						<label for="email" class="block text-sm font-medium text-[var(--text)] mb-2">
-							Email
-						</label>
-						<input
-							id="email"
-							type="email"
-							bind:value={email}
-							required
-							disabled={isLoading}
-							class="w-full px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-[var(--text)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
-							placeholder="you@example.com"
-						/>
-					</div>
+					<Input
+						id="email"
+						type="email"
+						label="Email"
+						placeholder="you@example.com"
+						bind:value={email}
+						required={true}
+						disabled={isLoading}
+					/>
 
-					<div>
-						<label for="password" class="block text-sm font-medium text-[var(--text)] mb-2">
-							Password
-						</label>
-						<input
-							id="password"
-							type="password"
-							bind:value={password}
-							required
-							disabled={isLoading}
-							class="w-full px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-[var(--text)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
-							placeholder="••••••••"
-						/>
-					</div>
+					<Input
+						id="password"
+						type="password"
+						label="Password"
+						placeholder="••••••••"
+						bind:value={password}
+						required={true}
+						disabled={isLoading}
+					/>
 
 					{#if error}
 						<div
@@ -85,13 +77,18 @@
 						</div>
 					{/if}
 
-					<button
-						type="submit"
-						disabled={isLoading}
-						class="w-full py-3 px-4 bg-[var(--accent)] text-white rounded-lg font-medium hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--surface)] disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
-					>
-						{isLoading ? 'Signing in...' : 'Sign in'}
-					</button>
+					<Button type="submit" variant="primary" fullWidth={true} disabled={isLoading}>
+						{#snippet children()}
+							{isLoading ? 'Signing in...' : 'Sign in'}
+						{/snippet}
+					</Button>
+
+					<div class="text-center mt-4">
+						<p class="text-sm text-[var(--text-muted)]">
+							Don't have an account?
+							<a href="/register" class="text-[var(--accent)] hover:underline">Create one</a>
+						</p>
+					</div>
 				</div>
 			</form>
 		</div>
